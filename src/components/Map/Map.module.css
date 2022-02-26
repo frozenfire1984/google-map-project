@@ -1,0 +1,11 @@
+.mapHolder {
+  width: 100vw;
+  height: 100vh;
+}
+
+.markerLabel {
+  font-size: 14px;
+  color: darkblue;
+}
+
+/*# sourceMappingURL=Map.module.css.map */

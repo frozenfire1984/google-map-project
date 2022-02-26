@@ -1,0 +1,53 @@
+.autocomplete {
+  background: inherit;
+
+  & &__input {
+    height: 40px;
+    width: MIN(50vw, 500px);
+
+    border: 1px hsl(0, 0%, 70%) solid;
+    border-radius: 3px;
+    padding: 0 5px;
+  }
+
+  & &__dropdown {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 12;
+    width: 100%;
+    margin: 5px 0 0;
+    padding: 0;
+    box-shadow: inherit;
+    background: inherit;
+  }
+
+  & &__item {
+    padding: 10px 15px;
+    border-top: 1px hsl(0, 0%, 95%) solid;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &:hover {
+      background-color: hsl(0, 0%, 98%);
+    }
+
+    &Title {
+      display: inline-block;
+      font-weight: bold;
+    }
+
+    &Addition {
+      display: inline-block;
+      color: hsl(0, 0%, 50%);
+      padding-left: 5px;
+      font-size: .9em;
+    }
+  }
+}
+
+
