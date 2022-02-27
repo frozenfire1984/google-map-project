@@ -1,13 +1,16 @@
 import React, {useCallback, useRef} from 'react'
-import {GoogleMap, Marker} from '@react-google-maps/api'
+import {GoogleMap} from '@react-google-maps/api'
 import s from './Map.module.css'
-import {defaultTheme} from './Theme'
-import {CurrentLocationMarker} from './../CurrentLocationMarker'
+//import {defaultTheme} from './Theme'
+import {Marker as StyledMarker} from '../Marker'
+import {CurrentLocationMarker} from '../CurrentLocationMarker'
 
 const containerStyle = {
 	width: '100%',
 	height: '100%'
 };
+
+
 
 const defaultOptions = {
 	panControl: true,
@@ -26,10 +29,13 @@ const defaultOptions = {
 
 const MODES = {
 	MOVE: 0,
-	SET_MARKER: 1
+	SET_MARKER: 1,
+	SINGLE: 2,
 }
 
-const Map = ({center, mode}) => {
+const mapProps = {}
+
+const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMarkerReplace}) => {
 	
 	console.log("msg from Map")
 	
@@ -46,13 +52,21 @@ const Map = ({center, mode}) => {
 	
 	
 	const onSetMarkerMode = (loc) => {
-		if (mode === MODES.SET_MARKER) {
-			const lat = loc.latLng.lat();
-			const lng = loc.latLng.lng();
-			console.log(lat, lng)
+		const lat = loc.latLng.lat();
+		const lng = loc.latLng.lng();
 		
-		} else {
-			console.log(loc)
+		switch (mode) {
+			case MODES.MOVE:
+				console.log("move")
+				break
+			case MODES.SET_MARKER:
+				onMarkerAdd({lat, lng})
+				break
+			case MODES.SINGLE:
+				onMarkerReplace({lat, lng})
+				break
+			default:
+				console.log("move")
 		}
 	}
 	
@@ -60,21 +74,18 @@ const Map = ({center, mode}) => {
 		<div className={s.mapHolder}>
 			<GoogleMap
 				mapContainerStyle={containerStyle}
-				center={center}
+				center={centerCoord}
 				zoom={10}
 				onLoad={onLoad}
 				onUnmount={onUnmount}
 				options={defaultOptions}
 				onClick={onSetMarkerMode}
 			>
-				<Marker position={center} />
-				
-				{/*{markers.map((pos) => {
-					<Marker position={pos} />
-				})}*/}
-				
+				<CurrentLocationMarker position={markerCurrentCoord} />
+					{markers.map((pos) => {
+						return <StyledMarker position={pos}  />
+					})}
 				}
-				
 			</GoogleMap>
 		</div>
 	)

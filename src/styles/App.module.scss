@@ -1,3 +1,7 @@
+.app {
+
+}
+
 .topbar {
   position: fixed;
   top: 0;
@@ -19,6 +23,28 @@
   border-radius: 3px;
   background-color: darkblue;
   color: #fff;
+
+  &#{&}_active {
+    background-color: blue;
+  }
+
+  & &__status {
+    font-style: italic;
+    font-size: .8em;
+  }
+}
+
+.debugInfo {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  width: 500px;
+  background: #fff;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  border: 2px hsl(0, 0%, 50%) dotted;
 }
 
 .mapHolder {
@@ -26,4 +52,6 @@
   height: 100vh;
   background: hsl(0, 0%, 90%);
 }
+
+
 

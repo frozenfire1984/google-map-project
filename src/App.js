@@ -1,9 +1,9 @@
 import {useState, useCallback, useEffect} from 'react';
+import Switch, { Case, Default } from 'react-switch-case';
 import {useJsApiLoader} from '@react-google-maps/api'
 import {Map, MODES} from './components/Map/'
 import {Autocomplete} from './components/Autocomplete/'
-import './index.css'
-import './styles/style.css';
+import s from './styles/App.module.css';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
@@ -12,36 +12,34 @@ const defaultCenter = {
   lng: -38.523
 };
 
-/*const MODES = {
-  MOVE: 0,
-	SET_MARKER: 1
-}*/
-
 const libraries = ['places']
 
 const App = () => {
-  
-  
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: API_KEY,
     libraries
   })
   
-  const [center, setCenter] = useState(defaultCenter)
+  const [centerCoord, setCenterCoord] = useState(defaultCenter)
   const [mode, setMode] = useState(MODES.MOVE)
-  const [marker, setMarker] = useState(MODES.MOVE)
+  const [markerCurrentCoord, setMarkerCurrentCoord] = useState(defaultCenter)
+  const [markers, setMarkers] = useState([])
   
   const onSelectCoordinates = useCallback((coordinates) => {
-    setCenter(coordinates)
+    setCenterCoord(coordinates)
+    setMarkerCurrentCoord(coordinates)
   },[]);
   
-  const toggleMode = () => {
+  const toggleMode = useCallback(() => {
     switch (mode) {
       case MODES.MOVE:
         setMode(MODES.SET_MARKER);
         break
       case MODES.SET_MARKER:
+        setMode(MODES.SINGLE);
+        break
+      case MODES.SINGLE:
         setMode(MODES.MOVE);
         break
       default:
@@ -49,27 +47,70 @@ const App = () => {
     }
     
     console.log(mode)
+  },[mode])
+  
+  const onMarkerAdd = (coordinates) => {
+    setMarkers([...markers, coordinates])
   }
   
-  const onMarkerAdd = () => {
+  const onMarkerReplace = (coordinates) => {
+    setMarkerCurrentCoord(coordinates)
+  }
   
+  const onClearAll = () => {
+    setMarkers([])
   }
   
   return (
-    <div className="app">
-      <div className="topbar">
+    <div className={s.app}>
+      
+      <div className={s.topbar}>
         <Autocomplete
           isLoaded={isLoaded}
           onSelectCoordinates={onSelectCoordinates}
         />
-        <button className="btn" onClick={toggleMode} on>Set marker</button>
-        {mode}
+        <button className={s.btn} onClick={toggleMode}>
+          Toggle marker -->&nbsp;
+          <span className={s.btn__status}>
+            <Switch condition={mode}>
+              <Case value={0}>
+                Move mode
+              </Case>
+              <Case value={1}>
+                Addition mode
+              </Case>
+              <Case value={2}>
+                Single mode
+              </Case>
+              <Default>
+                mode is undefined!
+              </Default>
+            </Switch>
+          </span>
+        </button>
+        <button className={s.btn} onClick={onClearAll}>
+          Clear all markers
+        </button>
+        
       </div>
+      
+      {/*<div className={s.debugInfo}>
+        {mode}
+        <br/>
+        {JSON.stringify(markers, null, 1)}
+      </div>*/}
       {isLoaded
         ?
         <>
         {/*<div className="mapHolder"/>*/}
-        <Map center={center} mode={mode} />
+          <Map
+            centerCoord={centerCoord}
+            markerCurrentCoord={markerCurrentCoord}
+            mode={mode}
+            markers={markers}
+            onMarkerAdd={onMarkerAdd}
+            onMarkerReplace={onMarkerReplace}
+          />
         </>
         : <>Loading...</>
       }

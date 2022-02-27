@@ -20,6 +20,26 @@
   background-color: darkblue;
   color: #fff;
 }
+.btn.btn_active {
+  background-color: blue;
+}
+.btn .btn__status {
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.debugInfo {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  width: 500px;
+  background: #fff;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  border: 2px gray dotted;
+}
 
 .mapHolder {
   width: 100vw;
@@ -27,4 +47,4 @@
   background: #e6e6e6;
 }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=App.module.css.map */

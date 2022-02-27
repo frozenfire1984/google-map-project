@@ -25,6 +25,8 @@ const Autocomplete = ({isLoaded, onSelectCoordinates}) => {
 	
 	console.log("msg from Autocomplete")
 	
+	
+	
 	const handleSelect =
 		({ description }) =>
 			() => {
