@@ -1,5 +1,5 @@
 import React, {useCallback, useRef} from 'react'
-import {GoogleMap} from '@react-google-maps/api'
+import {GoogleMap, Marker} from '@react-google-maps/api'
 import s from './Map.module.css'
 //import {defaultTheme} from './Theme'
 import {Marker as StyledMarker} from '../Marker'
@@ -50,7 +50,6 @@ const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMar
 		mapRef.current = undefined
 	},[])
 	
-	
 	const onSetMarkerMode = (loc) => {
 		const lat = loc.latLng.lat();
 		const lng = loc.latLng.lng();
@@ -81,10 +80,12 @@ const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMar
 				options={defaultOptions}
 				onClick={onSetMarkerMode}
 			>
-				<CurrentLocationMarker position={markerCurrentCoord} />
-					{markers.map((pos) => {
-						return <StyledMarker position={pos}  />
-					})}
+				<Marker position={markerCurrentCoord} />
+				
+				
+				{markers.map((pos) => {
+					return <Marker position={pos}  />
+				})}
 				}
 			</GoogleMap>
 		</div>

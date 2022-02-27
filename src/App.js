@@ -22,13 +22,16 @@ const App = () => {
   })
   
   const [centerCoord, setCenterCoord] = useState(defaultCenter)
-  const [mode, setMode] = useState(MODES.MOVE)
+  const [mode, setMode] = useState(MODES.SINGLE)
   const [markerCurrentCoord, setMarkerCurrentCoord] = useState(defaultCenter)
   const [markers, setMarkers] = useState([])
+  
+  const [isFeedbackOn, setIsFeedbackOn] = useState(false)
   
   const onSelectCoordinates = useCallback((coordinates) => {
     setCenterCoord(coordinates)
     setMarkerCurrentCoord(coordinates)
+    setIsFeedbackOn(false)
   },[]);
   
   const toggleMode = useCallback(() => {
@@ -45,7 +48,6 @@ const App = () => {
       default:
         setMode(MODES.MOVE);
     }
-    
     console.log(mode)
   },[mode])
   
@@ -55,6 +57,7 @@ const App = () => {
   
   const onMarkerReplace = (coordinates) => {
     setMarkerCurrentCoord(coordinates)
+    setIsFeedbackOn(true)
   }
   
   const onClearAll = () => {
@@ -68,6 +71,8 @@ const App = () => {
         <Autocomplete
           isLoaded={isLoaded}
           onSelectCoordinates={onSelectCoordinates}
+          markerCurrentCoord={markerCurrentCoord}
+          isFeedbackOn={isFeedbackOn}
         />
         <button className={s.btn} onClick={toggleMode}>
           Toggle marker -->&nbsp;
@@ -91,14 +96,17 @@ const App = () => {
         <button className={s.btn} onClick={onClearAll}>
           Clear all markers
         </button>
-        
       </div>
       
-      {/*<div className={s.debugInfo}>
-        {mode}
+      <div className={s.debugInfo}>
+  
+        {isFeedbackOn.toString()}
         <br/>
-        {JSON.stringify(markers, null, 1)}
-      </div>*/}
+        {JSON.stringify(markerCurrentCoord, null, 1)}
+        {/*{mode}
+        <br/>
+        {JSON.stringify(markers, null, 1)}*/}
+      </div>
       {isLoaded
         ?
         <>

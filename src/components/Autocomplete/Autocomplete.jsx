@@ -1,9 +1,9 @@
+import {useEffect, useState, memo} from "react";
 import usePlacesAutocomplete, { getGeocode,getLatLng } from "use-places-autocomplete";
 import useOnclickOutside from "react-cool-onclickoutside";
 import s from './Autocomplete.module.css'
-import {useEffect, memo} from "react";
 
-const Autocomplete = ({isLoaded, onSelectCoordinates}) => {
+const Autocomplete = ({isLoaded, onSelectCoordinates, markerCurrentCoord, isFeedbackOn}) => {
 	const {
 		ready,
 		value,
@@ -25,15 +25,13 @@ const Autocomplete = ({isLoaded, onSelectCoordinates}) => {
 	
 	console.log("msg from Autocomplete")
 	
-	
+	const [newValueFromMap, setNewValueFromMap] = useState("")
 	
 	const handleSelect =
 		({ description }) =>
 			() => {
 				setValue(description, false);
 				clearSuggestions();
-				//console.log(description)
-				
 				getGeocode({ address: description })
 					.then((results) => getLatLng(results[0]))
 					.then(({ lat, lng }) => {
@@ -68,10 +66,17 @@ const Autocomplete = ({isLoaded, onSelectCoordinates}) => {
 		}
 	},[isLoaded, init])
 	
+	useEffect(() => {
+		if (isFeedbackOn) {
+			console.log("set new value of Autocomplete!")
+			setNewValueFromMap("New address!")
+		}
+	},[markerCurrentCoord, isFeedbackOn])
+	
 	return (
 		<div ref={ref} className={s.autocomplete}>
 			<input
-				value={value}
+				value={newValueFromMap.length > 0 ? newValueFromMap : value}
 				onChange={handleInput}
 				disabled={!ready}
 				placeholder="Where are you going?"
