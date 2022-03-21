@@ -1,111 +1,75 @@
 import {useState, useCallback, useEffect} from 'react';
-import Switch, { Case, Default } from 'react-switch-case';
 import {useJsApiLoader} from '@react-google-maps/api'
-import {Map, MODES} from './components/Map/'
+import {Map} from './components/Map/'
 import {Autocomplete} from './components/Autocomplete/'
+import Geocode from "react-geocode";
 import s from './styles/App.module.css';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 const defaultCenter = {
-  lat: -3.745,
-  lng: -38.523
+  lat: 59.9966621,
+  lng: 30.2062085
 };
 
-const libraries = ['places']
+const libraries = ['places'];
 
-const App = () => {
+Geocode.setApiKey(API_KEY);
+Geocode.setLocationType("ROOFTOP");
+
+const App = ({place}) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: API_KEY,
     libraries
   })
   
+  useEffect(() => {
+    if (place) {
+      Geocode.fromAddress(place).then(
+        (response) => {
+          const { lat, lng } = response.results[0].geometry.location;
+          console.log(lat, lng);
+          setCenterCoord({lat, lng})
+          setMarkerCurrentCoord({lat, lng})
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    } else {
+      //console.log("get current address")
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setCenterCoord({lat, lng});
+        setMarkerCurrentCoord({lat, lng});
+      })
+    }
+  },[place])
+  
   const [centerCoord, setCenterCoord] = useState(defaultCenter)
-  const [mode, setMode] = useState(MODES.SINGLE)
   const [markerCurrentCoord, setMarkerCurrentCoord] = useState(defaultCenter)
-  const [markers, setMarkers] = useState([])
-  
-  const [isFeedbackOn, setIsFeedbackOn] = useState(false)
-  
   const onSelectCoordinates = useCallback((coordinates) => {
     setCenterCoord(coordinates)
     setMarkerCurrentCoord(coordinates)
-    setIsFeedbackOn(false)
+    //setIsFeedbackOn(false)
   },[]);
-  
-  const toggleMode = useCallback(() => {
-    switch (mode) {
-      case MODES.MOVE:
-        setMode(MODES.SET_MARKER);
-        break
-      case MODES.SET_MARKER:
-        setMode(MODES.SINGLE);
-        break
-      case MODES.SINGLE:
-        setMode(MODES.MOVE);
-        break
-      default:
-        setMode(MODES.MOVE);
-    }
-    console.log(mode)
-  },[mode])
-  
-  const onMarkerAdd = (coordinates) => {
-    setMarkers([...markers, coordinates])
-  }
-  
-  const onMarkerReplace = (coordinates) => {
-    setMarkerCurrentCoord(coordinates)
-    setIsFeedbackOn(true)
-  }
-  
-  const onClearAll = () => {
-    setMarkers([])
-  }
   
   return (
     <div className={s.app}>
-      
       <div className={s.topbar}>
         <Autocomplete
           isLoaded={isLoaded}
           onSelectCoordinates={onSelectCoordinates}
-          markerCurrentCoord={markerCurrentCoord}
-          isFeedbackOn={isFeedbackOn}
+          place={place}
         />
-        <button className={s.btn} onClick={toggleMode}>
-          Toggle marker -->&nbsp;
-          <span className={s.btn__status}>
-            <Switch condition={mode}>
-              <Case value={0}>
-                Move mode
-              </Case>
-              <Case value={1}>
-                Addition mode
-              </Case>
-              <Case value={2}>
-                Single mode
-              </Case>
-              <Default>
-                mode is undefined!
-              </Default>
-            </Switch>
-          </span>
-        </button>
-        <button className={s.btn} onClick={onClearAll}>
-          Clear all markers
-        </button>
       </div>
       
       <div className={s.debugInfo}>
-  
-        {isFeedbackOn.toString()}
+        {/*{isFeedbackOn.toString()}*/}
         <br/>
         {JSON.stringify(markerCurrentCoord, null, 1)}
-        {/*{mode}
-        <br/>
-        {JSON.stringify(markers, null, 1)}*/}
       </div>
       {isLoaded
         ?
@@ -114,10 +78,10 @@ const App = () => {
           <Map
             centerCoord={centerCoord}
             markerCurrentCoord={markerCurrentCoord}
-            mode={mode}
-            markers={markers}
-            onMarkerAdd={onMarkerAdd}
-            onMarkerReplace={onMarkerReplace}
+            //mode={mode}
+            //markers={markers}
+            //onMarkerAdd={onMarkerAdd}
+            //onMarkerReplace={onMarkerReplace}
           />
         </>
         : <>Loading...</>

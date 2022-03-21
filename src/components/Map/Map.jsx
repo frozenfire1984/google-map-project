@@ -35,22 +35,30 @@ const MODES = {
 
 const mapProps = {}
 
-const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMarkerReplace}) => {
+const Map = (
+	{
+		centerCoord,
+		markerCurrentCoord,
+		//mode,
+		//markers,
+		//onMarkerAdd,
+		//onMarkerReplace
+	}) => {
 	
-	console.log("msg from Map")
+	//console.log("msg from Map")
 	
 	const mapRef = React.useRef(undefined)
 	
 	const onLoad = React.useCallback(function test(map) {
 		mapRef.current = map
-		console.log(mapRef.current)
+		//console.log(mapRef.current)
 	},[])
 	
 	const onUnmount = React.useCallback(function test(map) {
 		mapRef.current = undefined
 	},[])
 	
-	const onSetMarkerMode = (loc) => {
+	/*const onSetMarkerMode = (loc) => {
 		const lat = loc.latLng.lat();
 		const lng = loc.latLng.lng();
 		
@@ -67,7 +75,7 @@ const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMar
 			default:
 				console.log("move")
 		}
-	}
+	}*/
 	
 	return (
 		<div className={s.mapHolder}>
@@ -78,14 +86,12 @@ const Map = ({centerCoord, markerCurrentCoord, mode, markers, onMarkerAdd, onMar
 				onLoad={onLoad}
 				onUnmount={onUnmount}
 				options={defaultOptions}
-				onClick={onSetMarkerMode}
+				//onClick={onSetMarkerMode}
 			>
 				<Marker position={markerCurrentCoord} />
-				
-				
-				{markers.map((pos) => {
+				{/*{markers.map((pos) => {
 					return <Marker position={pos}  />
-				})}
+				})}*/}
 				}
 			</GoogleMap>
 		</div>

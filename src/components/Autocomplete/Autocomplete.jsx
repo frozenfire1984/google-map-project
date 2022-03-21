@@ -3,7 +3,17 @@ import usePlacesAutocomplete, { getGeocode,getLatLng } from "use-places-autocomp
 import useOnclickOutside from "react-cool-onclickoutside";
 import s from './Autocomplete.module.css'
 
-const Autocomplete = ({isLoaded, onSelectCoordinates, markerCurrentCoord, isFeedbackOn}) => {
+const Autocomplete = (
+	{
+		isLoaded,
+		onSelectCoordinates,
+		place
+		//markerCurrentCoord,
+		//isFeedbackOn
+	}) => {
+	
+	
+	
 	const {
 		ready,
 		value,
@@ -14,6 +24,7 @@ const Autocomplete = ({isLoaded, onSelectCoordinates, markerCurrentCoord, isFeed
 	} = usePlacesAutocomplete({
 		initOnMount: false,
 		debounce: 300,
+		defaultValue: place,
 	});
 	const ref = useOnclickOutside(() => {
 		clearSuggestions();
@@ -23,9 +34,9 @@ const Autocomplete = ({isLoaded, onSelectCoordinates, markerCurrentCoord, isFeed
 		setValue(e.target.value);
 	};
 	
-	console.log("msg from Autocomplete")
+	//console.log("msg from Autocomplete")
 	
-	const [newValueFromMap, setNewValueFromMap] = useState("")
+	//const [newValueFromMap, setNewValueFromMap] = useState("")
 	
 	const handleSelect =
 		({ description }) =>
@@ -66,17 +77,18 @@ const Autocomplete = ({isLoaded, onSelectCoordinates, markerCurrentCoord, isFeed
 		}
 	},[isLoaded, init])
 	
-	useEffect(() => {
+	/*useEffect(() => {
 		if (isFeedbackOn) {
 			console.log("set new value of Autocomplete!")
 			setNewValueFromMap("New address!")
 		}
-	},[markerCurrentCoord, isFeedbackOn])
+	},[markerCurrentCoord, isFeedbackOn])*/
 	
 	return (
 		<div ref={ref} className={s.autocomplete}>
 			<input
-				value={newValueFromMap.length > 0 ? newValueFromMap : value}
+				//value={newValueFromMap.length > 0 ? newValueFromMap : value}
+				value={value}
 				onChange={handleInput}
 				disabled={!ready}
 				placeholder="Where are you going?"
